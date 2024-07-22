@@ -963,7 +963,7 @@ impl assets::Config for Runtime {
     type WeightInfo = assets::weights::SubstrateWeight<Runtime>;
     type AssetRegulator = (
         permissions::Pallet<Runtime>,
-        extended_assets::Pallet<Runtime>,
+        (extended_assets::Pallet<Runtime>, market::Pallet<Runtime>),
     );
 }
 
@@ -2428,6 +2428,13 @@ impl extended_assets::Config for Runtime {
     type WeightInfo = extended_assets::weights::SubstrateWeight<Runtime>;
 }
 
+#[cfg(feature = "wip")] // Market
+impl market::Config for Runtime {
+    type RuntimeEvent = RuntimeEvent;
+    type WeightInfo = market::weights::SubstrateWeight<Runtime>;
+    type AssetInfoProvider = Assets;
+}
+
 construct_runtime! {
     pub enum Runtime where
         Block = Block,
@@ -2553,6 +2560,8 @@ construct_runtime! {
 
         ApolloPlatform: apollo_platform::{Pallet, Call, Storage, Event<T>, ValidateUnsigned} = 114,
         ExtendedAssets: extended_assets::{Pallet, Call, Storage, Event<T>} = 115,
+        #[cfg(feature = "wip")] // Market
+        Market: market::{Pallet, Call, Storage, Event<T>} = 116,
     }
 }
 
@@ -3316,6 +3325,8 @@ impl_runtime_apis! {
             list_benchmark!(list, extra, bridge_data_signer, BridgeDataSigner);
             list_benchmark!(list, extra, multisig_verifier, MultisigVerifier);
             list_benchmark!(list, extra, extended_assets, ExtendedAssets);
+            #[cfg(feature = "wip")] // Market
+            list_benchmark!(list, extra, market, Market);
 
             let storage_info = AllPalletsWithSystem::storage_info();
 
@@ -3412,6 +3423,8 @@ impl_runtime_apis! {
             add_benchmark!(params, batches, bridge_data_signer, BridgeDataSigner);
             add_benchmark!(params, batches, multisig_verifier, MultisigVerifier);
             add_benchmark!(params, batches, extended_assets, ExtendedAssets);
+            #[cfg(feature = "wip")] // Market
+            add_benchmark!(params, batches, market, Market);
 
             if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
             Ok(batches)

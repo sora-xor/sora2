@@ -1257,6 +1257,12 @@ pub trait AssetManager<
         amount: Balance,
     ) -> DispatchResult;
 
+    fn burn_unchecked(
+        asset_id: &Self::AssetId,
+        from: &T::AccountId,
+        amount: Balance,
+    ) -> DispatchResult;
+
     fn burn(
         origin: OriginFor<T>,
         asset_id: Self::AssetId,
@@ -1376,6 +1382,14 @@ impl<
     fn mint_unchecked(
         _asset_id: &Self::AssetId,
         _to: &T::AccountId,
+        _amount: Balance,
+    ) -> DispatchResult {
+        unimplemented!()
+    }
+
+    fn burn_unchecked(
+        _asset_id: &Self::AssetId,
+        _from: &T::AccountId,
         _amount: Balance,
     ) -> DispatchResult {
         unimplemented!()
